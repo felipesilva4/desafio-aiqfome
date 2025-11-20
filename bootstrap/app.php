@@ -21,9 +21,20 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (ValidationException $e, $request) {
             if ($request->is('api/*') || $request->expectsJson()) {
+                $errors = $e->errors();
+
+                if (isset($errors['email'])) {
+                    $emailError = $errors['email'][0] ?? '';
+                    if ($emailError == 'The email has already been taken.') {
+                        return response()->json([
+                            'message' => 'Este email já está cadastrado.',
+                        ], 409);
+                    }
+                }
+
                 return response()->json([
                     'message' => 'Os dados fornecidos são inválidos.',
-                    'errors' => $e->errors(),
+                    'errors' => $errors,
                 ], 422);
             }
         });
@@ -36,5 +47,4 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 401);
             }
         });
-
     })->create();
