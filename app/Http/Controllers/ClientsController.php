@@ -2,22 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\UserRepositoryInterface;
+use App\Repositories\ClientsInterfaceRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 class ClientsController extends Controller
 {
     public function __construct(
-        private readonly UserRepositoryInterface $userRepository
+        private readonly ClientsInterfaceRepository $clientsRepository
     ) {
-    }
-
-
-    public function index()
-    {
-        //
     }
 
     
@@ -25,11 +18,11 @@ class ClientsController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:clients',
             'password' => 'required|string|min:8',
         ]);
 
-        $user = $this->userRepository->createUser($validated);
+        $user = $this->clientsRepository->createClient($validated);
 
         return response()->json([
             'message' => 'Usuário criado com sucesso',
@@ -37,43 +30,70 @@ class ClientsController extends Controller
         ], 201);
     }
 
-    /**
-     * O desafio não impoe um sistema de roles, como ADMIN, USER, etc. por exemplo
-     * Logo o usuario so pode ver o seu proprio usuario
-     */
-    public function show(Request $request)
+    public function showAll(Request $request): JsonResponse
     {
-        $user = auth('api')->user();
+        $clients = $this->clientsRepository->getAllClients();
 
-        return response()->json([
-            'user' => $user,
-        ]);
-    }
-
-    public function showAll(): JsonResponse
-    {
-        $users = $this->userRepository->getAllUsers();
-
-        if (!$users) {
+        if (!$clients) {
             return response()->json([
                 'message' => 'Nenhum usuário encontrado',
             ], 404);
         }
 
         return response()->json([
-            'users' => $users,
+            'users' => $clients,
         ]);
     }
 
-    public function update(Request $request, string $id)
+    public function show(string $id): JsonResponse
     {
-        $user = auth('api')->user();
+        $client = $this->clientsRepository->getClient($id);
 
-        
+        if (!$client) {
+            return response()->json([
+                'message' => 'Usuário não encontrado',
+            ], 404);
+        }
+
+        return response()->json([
+            'user' => $client,
+        ]);
+    }
+    
+    public function update(Request $request, string $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:clients,email,' . $id,
+        ]);
+
+        if (empty($validated)) {
+            return response()->json([
+                'message' => 'Nenhum campo fornecido para atualização',
+            ], 422);
+        }
+
+        $updatedUser = $this->clientsRepository->updateClient($id, $validated);
+
+        return response()->json([
+            'message' => 'Usuário atualizado com sucesso',
+            'user' => $updatedUser,
+        ]);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        //
+        $deletedUser = $this->clientsRepository->deleteClient($id);
+
+        if (!$deletedUser) {
+            return response()->json([
+                'message' => 'Usuário não encontrado',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Usuário deletado com sucesso',
+            'user' => $deletedUser,
+        ]);
     }
 }
