@@ -20,5 +20,10 @@ class ClientFavoriteProductsRepository implements ClientFavoriteProductsReposito
     {
         return ClientFavoriteProducts::where('client_id', $clientId)->where('product_id', $productId)->exists();
     }
+
+    public function deleteByClientId(string $clientId): void
+    {
+        ClientFavoriteProducts::where('client_id', $clientId)->delete();
+    }
 }
 

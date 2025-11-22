@@ -3,10 +3,16 @@
 namespace App\Repositories;
 
 use App\Models\Client;
+use App\Repositories\ClientFavoriteProductsRepositoryInterface;
 use Illuminate\Support\Collection;
 
 class ClientsRepository implements ClientsInterfaceRepository
 {
+    public function __construct(
+        private readonly ClientFavoriteProductsRepositoryInterface $favoriteProductsRepository
+    ) {
+    }
+
     public function createClient(array $data): Client
     {
         return Client::create($data);
@@ -40,6 +46,7 @@ class ClientsRepository implements ClientsInterfaceRepository
             return null;
         }
 
+        $this->favoriteProductsRepository->deleteByClientId($id);
         $client->delete();
 
         return $client;
