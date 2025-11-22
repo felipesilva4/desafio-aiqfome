@@ -7,6 +7,8 @@ use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\ClientsInterfaceRepository;
 use App\Repositories\ClientsRepository;
+use App\Repositories\ClientFavoriteProductsRepositoryInterface;
+use App\Repositories\ClientFavoriteProductsRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(ClientsInterfaceRepository::class, ClientsRepository::class);
+        $this->app->bind(ClientFavoriteProductsRepositoryInterface::class, ClientFavoriteProductsRepository::class);
     }
 
     /**

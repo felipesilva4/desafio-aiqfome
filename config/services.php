@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'api_products' => [
+        'url' => env('API_PRODUCTS_URL', 'https://fakestoreapi.com/'),
+        'cache_time' => env('API_PRODUCTS_CACHE_TIME', 600),
+    ],
+
 ];

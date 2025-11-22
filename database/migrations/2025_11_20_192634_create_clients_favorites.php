@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients_favorites', function (Blueprint $table) {
+        Schema::create('clients_favorite_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained('clients');
             $table->bigInteger('product_id'); //Esse ID é externo de uma api, por isso não tem relacionamento
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients_favorites');
+        Schema::dropIfExists('clients_favorite_products');
     }
 };

@@ -3,12 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Client;
-use App\Models\ClientFavorite;
+use App\Models\ClientFavoriteProducts;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ClientFavoriteFactory extends Factory
+class ClientFavoriteProductsFactory extends Factory
 {
-    protected $model = ClientFavorite::class;
+    protected $model = ClientFavoriteProducts::class;
 
     public function definition(): array
     {

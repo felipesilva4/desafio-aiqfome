@@ -1,10 +1,12 @@
 <?php
 
+use App\Exceptions\ProductAlreadyFavoritedException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\QueryException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -45,6 +47,14 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => 'Não autenticado.',
                     'error' => 'unauthenticated',
                 ], 401);
+            }
+        });
+
+        $exceptions->render(function (ProductAlreadyFavoritedException $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                ], 409);
             }
         });
     })->create();
