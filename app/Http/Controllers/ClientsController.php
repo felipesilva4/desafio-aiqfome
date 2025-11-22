@@ -175,14 +175,14 @@ class ClientsController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/clients/{user_id}',
+        path: '/api/clients/{id}',
         summary: 'Buscar cliente por ID',
         description: 'Retorna os dados de um cliente específico incluindo seus produtos favoritos',
         tags: ['Clientes'],
         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: 'user_id',
+                name: 'id',
                 in: 'path',
                 required: true,
                 description: 'ID do cliente',
@@ -267,14 +267,14 @@ class ClientsController extends Controller
     }
 
     #[OA\Put(
-        path: '/api/clients/{user_id}',
+        path: '/api/clients/{id}',
         summary: 'Atualizar cliente',
         description: 'Atualiza os dados de um cliente existente. Permite atualização parcial dos campos.',
         tags: ['Clientes'],
         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: 'user_id',
+                name: 'id',
                 in: 'path',
                 required: true,
                 description: 'ID do cliente',
@@ -349,14 +349,14 @@ class ClientsController extends Controller
         ]
     )]
     #[OA\Patch(
-        path: '/api/clients/{user_id}',
+        path: '/api/clients/{id}',
         summary: 'Atualizar cliente (PATCH)',
         description: 'Atualiza os dados de um cliente existente. Permite atualização parcial dos campos.',
         tags: ['Clientes'],
         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: 'user_id',
+                name: 'id',
                 in: 'path',
                 required: true,
                 description: 'ID do cliente',
@@ -427,14 +427,14 @@ class ClientsController extends Controller
     }
 
     #[OA\Delete(
-        path: '/api/clients/{user_id}',
+        path: '/api/clients/{id}',
         summary: 'Deletar cliente',
         description: 'Remove um cliente do sistema',
         tags: ['Clientes'],
         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: 'user_id',
+                name: 'id',
                 in: 'path',
                 required: true,
                 description: 'ID do cliente',

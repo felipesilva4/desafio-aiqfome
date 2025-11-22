@@ -10,10 +10,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api_user')->prefix('clients')->group(function () {
     Route::post('/', [ClientsController::class, 'store']);
     Route::get('/', [ClientsController::class, 'showAll']);
-    Route::get('/{user_id}', [ClientsController::class, 'show']);
-    Route::put('/{user_id}', [ClientsController::class, 'update']);
-    Route::patch('/{user_id}', [ClientsController::class, 'update']);
-    Route::delete('/{user_id}', [ClientsController::class, 'destroy']);
-    Route::post('/{user_id}/favorites', [ProductsController::class, 'storeFavoriteProduct']);
-    Route::get('/{user_id}/favorites', [ProductsController::class, 'showFavoriteProducts']);
+    Route::get('/{id}', [ClientsController::class, 'show']);
+    Route::put('/{id}', [ClientsController::class, 'update']);
+    Route::patch('/{id}', [ClientsController::class, 'update']);
+    Route::delete('/{id}', [ClientsController::class, 'destroy']);
+    
+    Route::prefix('{id}')->group(function () {
+        Route::post('/favorite-products', [ProductsController::class, 'storeFavoriteProduct']);
+        Route::get('/favorite-products', [ProductsController::class, 'showFavoriteProducts']);
+        Route::delete('/favorite-products/{product_id}', [ProductsController::class, 'destroyFavoriteProduct']);
+    });
 });

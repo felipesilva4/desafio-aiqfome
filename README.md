@@ -139,10 +139,10 @@ Cria um novo cliente.
 #### GET `/api/clients`
 Lista todos os clientes.
 
-#### GET `/api/clients/{user_id}`
+#### GET `/api/clients/{id}`
 Busca um cliente específico com seus produtos favoritos.
 
-#### PUT/PATCH `/api/clients/{user_id}`
+#### PUT/PATCH `/api/clients/{id}`
 Atualiza os dados de um cliente.
 
 **Request:**
@@ -153,12 +153,12 @@ Atualiza os dados de um cliente.
 }
 ```
 
-#### DELETE `/api/clients/{user_id}`
+#### DELETE `/api/clients/{id}`
 Remove um cliente do sistema.
 
 ### Produtos Favoritos
 
-#### POST `/api/clients/{user_id}/favorites`
+#### POST `/api/clients/{id}/favorite-products`
 Adiciona um produto à lista de favoritos de um cliente.
 
 **Request:**
@@ -168,8 +168,25 @@ Adiciona um produto à lista de favoritos de um cliente.
 }
 ```
 
-#### GET `/api/clients/{user_id}/favorites`
+**Response (201 Created):**
+```json
+{
+  "id": 1,
+  "client_id": 1,
+  "product_id": 1
+}
+```
+
+#### GET `/api/clients/{id}/favorite-products`
 Lista todos os produtos favoritos de um cliente.
+
+#### DELETE `/api/clients/{id}/favorite-products/{product_id}`
+Remove um produto específico da lista de favoritos de um cliente.
+
+**Response (204 No Content):**
+```
+(sem conteúdo)
+```
 
 **Response:**
 ```json

@@ -298,17 +298,17 @@
                 ]
             }
         },
-        "/api/clients/{user_id}": {
+        "/api/clients/{id}": {
             "get": {
                 "tags": [
                     "Clientes"
                 ],
                 "summary": "Buscar cliente por ID",
                 "description": "Retorna os dados de um cliente específico incluindo seus produtos favoritos",
-                "operationId": "5d81df5b65c721a6c671a8beb6998930",
+                "operationId": "b14ec5af90558633e3b1f226e0249d4f",
                 "parameters": [
                     {
-                        "name": "user_id",
+                        "name": "id",
                         "in": "path",
                         "description": "ID do cliente",
                         "required": true,
@@ -422,10 +422,10 @@
                 ],
                 "summary": "Atualizar cliente",
                 "description": "Atualiza os dados de um cliente existente. Permite atualização parcial dos campos.",
-                "operationId": "8646d162279fa2a00a1ddc1b71a8701b",
+                "operationId": "9ffd4acb0368eb6068e75cd7dd5d43ff",
                 "parameters": [
                     {
-                        "name": "user_id",
+                        "name": "id",
                         "in": "path",
                         "description": "ID do cliente",
                         "required": true,
@@ -570,10 +570,10 @@
                 ],
                 "summary": "Deletar cliente",
                 "description": "Remove um cliente do sistema",
-                "operationId": "2f4bdbb950ee9b9fc15ee8e60c66a2a6",
+                "operationId": "527e3694096ac0e9d71511de8b647c8d",
                 "parameters": [
                     {
-                        "name": "user_id",
+                        "name": "id",
                         "in": "path",
                         "description": "ID do cliente",
                         "required": true,
@@ -662,10 +662,10 @@
                 ],
                 "summary": "Atualizar cliente (PATCH)",
                 "description": "Atualiza os dados de um cliente existente. Permite atualização parcial dos campos.",
-                "operationId": "94c9bbbe3679e5ef4eac5a64bf0aa1ba",
+                "operationId": "456d798a912b086f80671fd95dd89cda",
                 "parameters": [
                     {
-                        "name": "user_id",
+                        "name": "id",
                         "in": "path",
                         "description": "ID do cliente",
                         "required": true,
@@ -739,17 +739,17 @@
                 ]
             }
         },
-        "/api/clients/{user_id}/favorites": {
+        "/api/clients/{id}/favorite-products": {
             "get": {
                 "tags": [
                     "Produtos Favoritos"
                 ],
                 "summary": "Listar produtos favoritos",
                 "description": "Retorna a lista de produtos favoritos de um cliente",
-                "operationId": "de698d92931f8b0f932e8c4965fe2754",
+                "operationId": "2e1b89e6e620e8a65cce9b394941fb9c",
                 "parameters": [
                     {
-                        "name": "user_id",
+                        "name": "id",
                         "in": "path",
                         "description": "ID do cliente",
                         "required": true,
@@ -836,10 +836,10 @@
                 ],
                 "summary": "Adicionar produto favorito",
                 "description": "Adiciona um produto à lista de favoritos de um cliente",
-                "operationId": "e97ff50a2519d739dfccde48150e0a00",
+                "operationId": "958f4e7c19288537fede9fa55561d25c",
                 "parameters": [
                     {
-                        "name": "user_id",
+                        "name": "id",
                         "in": "path",
                         "description": "ID do cliente",
                         "required": true,
@@ -869,15 +869,23 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Produto favoritado com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Produto favoritado com sucesso"
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "client_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "product_id": {
+                                            "type": "integer",
+                                            "example": 1
                                         }
                                     },
                                     "type": "object"
@@ -926,6 +934,10 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Este produto já está nos favoritos."
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "product_already_favorited"
                                         }
                                     },
                                     "type": "object"
@@ -944,6 +956,80 @@
                                         },
                                         "errors": {
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/clients/{id}/favorite-products/{product_id}": {
+            "delete": {
+                "tags": [
+                    "Produtos Favoritos"
+                ],
+                "summary": "Remover produto favorito",
+                "description": "Remove um produto específico da lista de favoritos de um cliente",
+                "operationId": "17c2ca65ce479f01ac6c44733c6c24fd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "product_id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Produto removido com sucesso (sem conteúdo)"
+                    },
+                    "401": {
+                        "description": "Não autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Não autenticado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cliente ou produto favorito não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Produto favorito não encontrado"
                                         }
                                     },
                                     "type": "object"

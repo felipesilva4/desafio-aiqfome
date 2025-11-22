@@ -18,14 +18,14 @@ class ProductsController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/clients/{user_id}/favorites',
+        path: '/api/clients/{id}/favorite-products',
         summary: 'Adicionar produto favorito',
         description: 'Adiciona um produto à lista de favoritos de um cliente',
         tags: ['Produtos Favoritos'],
         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: 'user_id',
+                name: 'id',
                 in: 'path',
                 required: true,
                 description: 'ID do cliente',
@@ -43,11 +43,13 @@ class ProductsController extends Controller
         ),
         responses: [
             new OA\Response(
-                response: 200,
+                response: 201,
                 description: 'Produto favoritado com sucesso',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: 'message', type: 'string', example: 'Produto favoritado com sucesso'),
+                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                        new OA\Property(property: 'client_id', type: 'integer', example: 1),
+                        new OA\Property(property: 'product_id', type: 'integer', example: 1),
                     ]
                 )
             ),
@@ -91,17 +93,23 @@ class ProductsController extends Controller
             ),
         ]
     )]
-    public function storeFavoriteProduct(Request $request): JsonResponse
+    public function storeFavoriteProduct(Request $request, string $id): JsonResponse
     {
+        $client = $this->clientsRepository->getClient($id);
+
+        if (!$client) {
+            return response()->json([
+                'message' => 'Cliente não encontrado',
+            ], 404);
+        }
+
         $validated = $request->validate([
             'product_id' => 'integer|required',
         ]);
 
-        //Optei pelo service para deixar a controller com apenas a responsabilidade
-        //de validar os dados e chamar o repository para salvar o produto favorito
         $products = $this->validateProductsService->validateProducts(
             $validated['product_id'],
-             $request->user_id
+            $id
         );
 
         if (!$products) {
@@ -110,20 +118,30 @@ class ProductsController extends Controller
             ], 404);
         }
 
+        $favoriteProduct = $this->validateProductsService->getFavoriteProduct($id, $validated['product_id']);
+
+        if (!$favoriteProduct) {
+            return response()->json([
+                'message' => 'Erro ao criar favorito',
+            ], 500);
+        }
+
         return response()->json([
-            'message' => 'Produto favoritado com sucesso',
-        ]);
+            'id' => $favoriteProduct->id,
+            'client_id' => (int) $id,
+            'product_id' => (int) $validated['product_id'],
+        ], 201);
     }
 
     #[OA\Get(
-        path: '/api/clients/{user_id}/favorites',
+        path: '/api/clients/{id}/favorite-products',
         summary: 'Listar produtos favoritos',
         description: 'Retorna a lista de produtos favoritos de um cliente',
         tags: ['Produtos Favoritos'],
         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: 'user_id',
+                name: 'id',
                 in: 'path',
                 required: true,
                 description: 'ID do cliente',
@@ -166,22 +184,92 @@ class ProductsController extends Controller
             ),
         ]
     )]
-    public function showFavoriteProducts(Request $request): JsonResponse
+    public function showFavoriteProducts(Request $request, string $id): JsonResponse
     {
-        $client = $this->clientsRepository->getClient($request->user_id);
+        $client = $this->clientsRepository->getClient($id);
 
         if (!$client) {
-            return response()->json([], 404);   
+            return response()->json([
+                'message' => 'Cliente não encontrado',
+            ], 404);   
         }
 
-        $products = $this->validateProductsService->showFavoriteProducts($request->user_id);
+        $products = $this->validateProductsService->showFavoriteProducts($id);
         
         $productsDTO = [];
         foreach ($products as $product) {
             $productsDTO[] = (new FavoriteProductDTO((array) $product))->toArray();
         }
 
-        return response()->json($productsDTO ?? []);
+        return response()->json($productsDTO);
+    }
+
+    #[OA\Delete(
+        path: '/api/clients/{id}/favorite-products/{product_id}',
+        summary: 'Remover produto favorito',
+        description: 'Remove um produto específico da lista de favoritos de um cliente',
+        tags: ['Produtos Favoritos'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                description: 'ID do cliente',
+                schema: new OA\Schema(type: 'integer', example: 1)
+            ),
+            new OA\Parameter(
+                name: 'product_id',
+                in: 'path',
+                required: true,
+                description: 'ID do produto',
+                schema: new OA\Schema(type: 'integer', example: 1)
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: 'Produto removido com sucesso (sem conteúdo)'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Não autenticado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Não autenticado.'),
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'Cliente ou produto favorito não encontrado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Produto favorito não encontrado'),
+                    ]
+                )
+            ),
+        ]
+    )]
+    public function destroyFavoriteProduct(Request $request, string $id, string $product_id): JsonResponse
+    {
+        $client = $this->clientsRepository->getClient($id);
+
+        if (!$client) {
+            return response()->json([
+                'message' => 'Cliente não encontrado',
+            ], 404);
+        }
+
+        $deleted = $this->validateProductsService->deleteFavoriteProduct($id, $product_id);
+
+        if (!$deleted) {
+            return response()->json([
+                'message' => 'Produto favorito não encontrado',
+            ], 404);
+        }
+
+        return response()->json(null, 204);
     }
 }
 

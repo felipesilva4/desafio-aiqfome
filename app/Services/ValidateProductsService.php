@@ -93,5 +93,15 @@ class ValidateProductsService
 
         return $cachedProducts;
     }
+
+    public function getFavoriteProduct(string $clientId, string $productId)
+    {
+        return $this->productsRepository->getByClientIdAndProductId($clientId, $productId);
+    }
+
+    public function deleteFavoriteProduct(string $clientId, string $productId): bool
+    {
+        return $this->productsRepository->deleteByClientIdAndProductId($clientId, $productId);
+    }
 }
 

@@ -25,5 +25,19 @@ class ClientFavoriteProductsRepository implements ClientFavoriteProductsReposito
     {
         ClientFavoriteProducts::where('client_id', $clientId)->delete();
     }
+
+    public function deleteByClientIdAndProductId(string $clientId, string $productId): bool
+    {
+        return ClientFavoriteProducts::where('client_id', $clientId)
+            ->where('product_id', $productId)
+            ->delete() > 0;
+    }
+
+    public function getByClientIdAndProductId(string $clientId, string $productId)
+    {
+        return ClientFavoriteProducts::where('client_id', $clientId)
+            ->where('product_id', $productId)
+            ->first();
+    }
 }
 
