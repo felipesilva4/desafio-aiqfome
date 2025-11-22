@@ -15,6 +15,3 @@ docker exec -u 0 -it app-laravel composer install
 echo "Migrando banco de dados..."
 docker exec -it app-laravel php artisan migrate --seed
 #docker exec -it app-laravel php artisan jwt:secret
-
-echo "Criando banco para testes"
-docker exec -it postgres-db psql -U root -d postgres -c "CREATE DATABASE laravel_test;"
