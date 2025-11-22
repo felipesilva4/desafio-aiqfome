@@ -15,7 +15,7 @@ API REST desenvolvida em Laravel 12 para gerenciamento de clientes e produtos fa
 1. Clone o repositório:
 ```bash
 git clone git@github.com:felipesilva4/desafio-aiqfome.git
-cd aiqfome
+cd desafio-aiqfome
 ```
 
 2. Execute o script de inicialização:
@@ -37,7 +37,7 @@ O script irá:
 1. Clone o repositório:
 ```bash
 git clone git@github.com:felipesilva4/desafio-aiqfome.git
-cd aiqfome
+cd desafio-aiqfome
 ```
 
 2. Copie o arquivo de ambiente:
