@@ -32,7 +32,7 @@ O script irá:
 - Gerar a chave da aplicação
 - Executar as migrations e seeders
 
-### Opção 2: Windows ou Execução Manual
+### Opção 2: Execução Manual, não sei como seria no windows
 
 1. Clone o repositório:
 ```bash
@@ -92,7 +92,7 @@ Após executar o seeder, você terá um usuário admin:
 
 Eu inseri o postman collection para facilitar a utilização do projeto, você pode acessá-lo [aqui](https://github.com/felipesilva4/desafio-aiqfome)
 
-Porém será necessário fazer se autenticar e inserir o token no header da requisição.
+Porém será necessário se autenticar e inserir o token no header da requisição.
 
 ## 📚 Endpoints da API
 
@@ -208,11 +208,6 @@ A documentação completa da API está disponível em:
 - **Swagger UI**: http://localhost:8000/api/documentation
 - **Swagger Editor**: http://localhost:8081
 
-Para regenerar a documentação após alterações:
-```bash
-docker exec -it app-laravel php artisan l5-swagger:generate
-```
-
 ## 🛠️ Tecnologias Utilizadas
 
 - **Laravel 12**: Framework PHP
@@ -220,7 +215,7 @@ docker exec -it app-laravel php artisan l5-swagger:generate
 - **JWT Auth**: Autenticação via tokens
 - **Docker & Docker Compose**: Containerização
 - **Nginx**: Servidor web
-- **Swagger/OpenAPI**: Documentação da API
+- **Swagger**: Documentação da API
 - **Guzzle HTTP**: Cliente HTTP para APIs externas
 
 ## 📁 Estrutura do Projeto
@@ -282,14 +277,10 @@ O projeto segue os princípios SOLID e utiliza:
 - **Dependency Injection**: Inversão de dependências
 - **Interface Segregation**: Interfaces específicas e coesas
 
-## 📄 Licença
-
-Este projeto é um desafio técnico desenvolvido para avaliação.
-
-## 👤 Autor
-
-Desenvolvido como parte de um desafio técnico.
-
 ---
 
 **Nota**: Certifique-se de ter Docker e Docker Compose instalados antes de iniciar o projeto.
+
+
+**Nota 2**: O desafio informa que deveria ser inserido o review caso houvesse, porém na fakestore, nenhum campo se encaixa
+logo mudei review para descrição, pois é o campo que melhor se adequa ao contexto da resposta
