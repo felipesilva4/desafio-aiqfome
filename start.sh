@@ -14,4 +14,4 @@ docker exec -u 0 -it app-laravel composer install
 
 echo "Migrando banco de dados..."
 docker exec -it app-laravel php artisan migrate --seed
-#docker exec -it app-laravel php artisan jwt:secret
+docker exec -it app-laravel php artisan jwt:secret
